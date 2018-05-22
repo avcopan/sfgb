@@ -53,3 +53,31 @@ except FileNotFoundError:
     internal = sobol.i4_sobol_generate(6, Nsample)
     numpy.save('sobseq', internal)
 print(internal)
+
+# in ang and degrees, for Vmax = 15000
+minmaxinternal = numpy.array([[1.03, 1.50],
+                              [0.84, 1.69],
+                              [0.84, 1.69],
+                              [83, 162],
+                              [83, 162],
+                              [105, 255]])
+# convert angstroms to bohr
+minmaxinternal[:3, :] *= 1.88973
+# convert degrees to radians
+minmaxinternal[3:, :] *= numpy.pi / 180.
+
+for i in range(6):
+    internal[:, i] = (numpy.ones((Nsample,)) * minmaxinternal[i, 0] +
+                      numpy.ones((Nsample,)) *
+                      (minmaxinternal[i, 1] - minmaxinternal[i, 0]) *
+                      internal[:, i])
+
+print(internal)
+# add equilibrium geometry
+internal_eq = numpy.array([r3eq, r1eq, r2eq, theta1eq, theta2eq, phieq])
+internal_eq[:3] *= 1.88973
+
+internal = numpy.concatenate(([internal_eq], internal), axis=0)
+
+# convert internals to cartesians
+# x = internalToXYZ(internal)
