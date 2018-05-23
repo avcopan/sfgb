@@ -22,6 +22,21 @@ def internal_to_xyz(q):
     return value
 
 
+def xyz_to_rij(x):
+    C = x[:, 0:3]
+    Ox = x[:, 3:6]
+    H1 = x[:, 6:9]
+    H2 = x[:, 9:]
+    COx = numpy.linalg.norm(C - Ox, axis=1)
+    CH1 = numpy.linalg.norm(C - H1, axis=1)
+    CH2 = numpy.linalg.norm(C - H2, axis=1)
+    OxH1 = numpy.linalg.norm(H1 - Ox, axis=1)
+    OxH2 = numpy.linalg.norm(H2 - Ox, axis=1)
+    H1H2 = numpy.linalg.norm(H1 - H2, axis=1)
+    value = numpy.array([COx, CH1, CH2, OxH1, OxH2, H1H2])
+    return value
+
+
 ndimxyz = 12
 
 Vmax = 15000
@@ -101,4 +116,5 @@ internal = numpy.concatenate(([internal_eq], internal), axis=0)
 
 # convert internals to cartesians
 x = internal_to_xyz(internal)
-# Rij = xyz_to_rij(x)
+Rij = xyz_to_rij(x)
+print(Rij[:, 0] / 1.8873)
