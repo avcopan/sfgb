@@ -2,6 +2,26 @@ import numpy
 import sobol
 
 
+def internal_to_xyz(q):
+    Nsample, ndim = numpy.shape(q)
+    ndimxyz = 12
+    x = numpy.zeros((Nsample, ndimxyz))
+    x[:, 4] = internal[:, 0]  # y(O)
+
+    x[:, 6] = -numpy.sin(internal[:, 3]) * internal[:, 1]  # x(H1)
+    x[:, 7] = +numpy.cos(internal[:, 3]) * internal[:, 1]  # y(H1)
+
+    x[:, 10] = +numpy.cos(internal[:, 4]) * internal[:, 2]  # y(H2)
+
+    # distance from H2 to the y axis
+    ksi = numpy.sin(internal[:, 4]) * internal[:, 2]
+    x[:, 9] = ksi * numpy.cos(numpy.pi - internal[:, 5])  # x(H2)
+    x[:, 11] = ksi * numpy.sin(numpy.pi - internal[:, 5])  # z(H2)
+    value = x
+
+    return value
+
+
 ndimxyz = 12
 
 Vmax = 15000
@@ -80,4 +100,5 @@ internal_eq[:3] *= 1.88973
 internal = numpy.concatenate(([internal_eq], internal), axis=0)
 
 # convert internals to cartesians
-# x = internalToXYZ(internal)
+x = internal_to_xyz(internal)
+# Rij = xyz_to_rij(x)
