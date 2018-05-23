@@ -1,5 +1,6 @@
 import numpy
 import sobol
+from pes import PESH2CO
 
 
 def internal_to_xyz(q):
@@ -117,4 +118,5 @@ internal = numpy.concatenate(([internal_eq], internal), axis=0)
 # convert internals to cartesians
 x = internal_to_xyz(internal)
 Rij = xyz_to_rij(x)
-print(Rij[:, 0] / 1.8873)
+
+print(PESH2CO(Rij[:, :8] / 1.88973))
